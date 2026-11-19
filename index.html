@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AXIOM-9 | Human, Upgraded</title>
+<meta name="description" content="AXIOM-9 — a cyborg-themed landing page. Augment. Evolve. Transcend." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#05070d;
+    --panel:#0a1020;
+    --cyan:#00f0ff;
+    --magenta:#ff2bd6;
+    --lime:#b6ff3b;
+    --text:#cfe8ff;
+    --muted:#7f95b3;
+    --line:rgba(0,240,255,.25);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:'Rajdhani',sans-serif;font-size:18px;line-height:1.6;
+    overflow-x:hidden;
+  }
+  /* scanlines + vignette */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:100;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);
+    mix-blend-mode:multiply;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:99;
+    background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.6) 100%);
+  }
+  #bg{position:fixed;inset:0;z-index:-1}
+  h1,h2,h3,.brand{font-family:'Orbitron',sans-serif;letter-spacing:.04em}
+  .mono{font-family:'Share Tech Mono',monospace}
+  a{color:inherit;text-decoration:none}
+  .container{width:min(1150px,92%);margin:auto}
+
+  /* NAV */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    backdrop-filter:blur(10px);background:rgba(5,7,13,.7);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{font-weight:900;font-size:1.3rem;color:var(--cyan);text-shadow:0 0 12px var(--cyan)}
+  .brand span{color:var(--magenta);text-shadow:0 0 12px var(--magenta)}
+  .links{display:flex;gap:28px;align-items:center}
+  .links a{font-size:.95rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);transition:.25s}
+  .links a:hover{color:var(--cyan);text-shadow:0 0 8px var(--cyan)}
+  .burger{display:none;background:none;border:1px solid var(--line);color:var(--cyan);width:42px;height:42px;font-size:1.3rem;cursor:pointer;border-radius:6px}
+
+  /* BUTTONS */
+  .btn{
+    display:inline-block;padding:14px 30px;font-family:'Orbitron',sans-serif;font-weight:700;
+    font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border:none;
+    clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+    transition:.3s;
+  }
+  .btn-primary{background:var(--cyan);color:#001318;box-shadow:0 0 25px rgba(0,240,255,.5)}
+  .btn-primary:hover{background:var(--magenta);color:#fff;box-shadow:0 0 30px rgba(255,43,214,.7);transform:translateY(-2px)}
+  .btn-ghost{background:transparent;color:var(--cyan);outline:1px solid var(--cyan);outline-offset:-1px}
+  .btn-ghost:hover{background:rgba(0,240,255,.1)}
+
+  /* HERO */
+  .hero{min-height:100vh;display:grid;align-items:center;padding:110px 0 60px}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+  .tag{display:inline-block;border:1px solid var(--lime);color:var(--lime);padding:4px 12px;font-size:.8rem;letter-spacing:.2em;margin-bottom:18px}
+  .tag::before{content:"● ";animation:blink 1.2s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  h1{font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.05;font-weight:900;margin-bottom:20px}
+  .glitch{position:relative;color:var(--cyan);text-shadow:0 0 18px rgba(0,240,255,.6)}
+  .glitch::before,.glitch::after{
+    content:attr(data-text);position:absolute;left:0;top:0;width:100%;overflow:hidden;
+  }
+  .glitch::before{color:var(--magenta);transform:translate(2px,0);clip-path:inset(0 0 60% 0);animation:g1 2.4s infinite linear alternate-reverse}
+  .glitch::after{color:var(--lime);transform:translate(-2px,0);clip-path:inset(60% 0 0 0);animation:g2 3s infinite linear alternate-reverse}
+  @keyframes g1{0%{clip-path:inset(10% 0 70% 0)}20%{clip-path:inset(40% 0 30% 0)}40%{clip-path:inset(0 0 85% 0)}60%{clip-path:inset(55% 0 20% 0)}80%{clip-path:inset(25% 0 55% 0)}100%{clip-path:inset(70% 0 5% 0)}}
+  @keyframes g2{0%{clip-path:inset(60% 0 10% 0)}25%{clip-path:inset(5% 0 80% 0)}50%{clip-path:inset(35% 0 45% 0)}75%{clip-path:inset(80% 0 0 0)}100%{clip-path:inset(20% 0 60% 0)}}
+  .hero p.lead{color:var(--muted);max-width:520px;margin-bottom:30px;font-size:1.15rem}
+  .typed{color:var(--lime);min-height:1.6em;margin-bottom:26px;font-size:1rem}
+  .typed::after{content:"▌";animation:blink 1s infinite}
+  .cta{display:flex;gap:16px;flex-wrap:wrap}
+
+  /* HUD ORB */
+  .hud{position:relative;aspect-ratio:1;max-width:460px;margin:auto;width:100%}
+  .hud svg{width:100%;height:100%;overflow:visible}
+  .ring{transform-origin:50% 50%}
+  .r1{animation:spin 22s linear infinite}
+  .r2{animation:spin 14s linear infinite reverse}
+  .r3{animation:spin 30s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .eye{animation:pulse 2.4s ease-in-out infinite;transform-origin:50% 50%}
+  @keyframes pulse{50%{transform:scale(1.12);opacity:.8}}
+  .hud-label{position:absolute;font-size:.72rem;color:var(--cyan);padding:4px 8px;border:1px solid var(--line);background:rgba(5,7,13,.7)}
+  .hud-label.a{top:6%;left:-2%}
+  .hud-label.b{bottom:10%;right:-2%;color:var(--magenta);border-color:rgba(255,43,214,.4)}
+  .hud-label.c{top:46%;right:-6%;color:var(--lime);border-color:rgba(182,255,59,.4)}
+
+  /* SECTIONS */
+  section{padding:100px 0;position:relative}
+  .sec-head{text-align:center;margin-bottom:56px}
+  .sec-head .mono{color:var(--magenta);font-size:.85rem;letter-spacing:.3em}
+  .sec-head h2{font-size:clamp(1.8rem,4vw,2.8rem);margin-top:8px}
+  .sec-head h2 em{font-style:normal;color:var(--cyan);text-shadow:0 0 14px rgba(0,240,255,.5)}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .stat{text-align:center;padding:28px 12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(0,240,255,.06),transparent)}
+  .stat b{display:block;font-family:'Orbitron';font-size:2.4rem;color:var(--cyan);text-shadow:0 0 14px rgba(0,240,255,.5)}
+  .stat span{color:var(--muted);font-size:.9rem;text-transform:uppercase;letter-spacing:.15em}
+
+  /* FEATURES */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .card{
+    position:relative;padding:32px 26px;background:var(--panel);border:1px solid var(--line);
+    transition:.35s;overflow:hidden;
+    clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,22px 100%,0 calc(100% - 22px));
+  }
+  .card::before{
+    content:"";position:absolute;left:0;top:-100%;width:100%;height:100%;
+    background:linear-gradient(180deg,transparent,rgba(0,240,255,.12),transparent);transition:.6s;
+  }
+  .card:hover{transform:translateY(-8px);border-color:var(--cyan);box-shadow:0 0 30px rgba(0,240,255,.25)}
+  .card:hover::before{top:100%}
+  .icon{font-size:2.2rem;margin-bottom:14px;filter:drop-shadow(0 0 8px var(--cyan))}
+  .card h3{font-size:1.1rem;margin-bottom:10px;color:#fff}
+  .card p{color:var(--muted);font-size:1rem}
+
+  /* AUGMENT SCANNER */
+  .scanner{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+  .tabs{display:flex;flex-direction:column;gap:12px}
+  .tab{
+    text-align:left;padding:16px 20px;background:var(--panel);border:1px solid var(--line);color:var(--text);
+    font-family:'Rajdhani';font-size:1.1rem;cursor:pointer;transition:.25s;
+  }
+  .tab b{font-family:'Orbitron';font-size:.9rem;letter-spacing:.1em;display:block;color:var(--cyan)}
+  .tab:hover,.tab.active{border-color:var(--magenta);background:rgba(255,43,214,.08);box-shadow:inset 3px 0 0 var(--magenta)}
+  .readout{padding:30px;border:1px solid var(--line);background:rgba(10,16,32,.8);min-height:300px;position:relative}
+  .readout h3{color:var(--lime);margin-bottom:14px}
+  .bar{height:8px;background:#0c1830;margin:6px 0 16px;position:relative;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--magenta));transition:width 1s ease}
+  .readout .mono{font-size:.85rem;color:var(--muted)}
+
+  /* TIMELINE */
+  .timeline{position:relative;max-width:760px;margin:auto;padding-left:34px}
+  .timeline::before{content:"";position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(var(--cyan),var(--magenta))}
+  .tl{position:relative;margin-bottom:34px;padding:20px 24px;background:var(--panel);border:1px solid var(--line)}
+  .tl::before{content:"";position:absolute;left:-34px;top:26px;width:18px;height:18px;border-radius:50%;background:var(--bg);border:2px solid var(--cyan);box-shadow:0 0 12px var(--cyan)}
+  .tl .mono{color:var(--magenta);font-size:.85rem}
+  .tl h3{margin:4px 0 6px;font-size:1.05rem}
+  .tl p{color:var(--muted)}
+
+  /* CTA / FORM */
+  .join{
+    padding:60px 40px;text-align:center;border:1px solid var(--cyan);
+    background:radial-gradient(circle at 50% 0,rgba(0,240,255,.12),transparent 70%),var(--panel);
+    box-shadow:0 0 50px rgba(0,240,255,.15);
+  }
+  .join h2{font-size:clamp(1.6rem,4vw,2.5rem);margin-bottom:12px}
+  .join p{color:var(--muted);margin-bottom:28px}
+  form{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  input{
+    flex:1 1 280px;max-width:380px;padding:14px 18px;background:#060b16;border:1px solid var(--line);
+    color:var(--text);font-family:'Share Tech Mono';font-size:1rem;outline:none;transition:.25s;
+  }
+  input:focus{border-color:var(--cyan);box-shadow:0 0 14px rgba(0,240,255,.4)}
+  #msg{margin-top:18px;min-height:1.4em;color:var(--lime)}
+
+  footer{padding:36px 0;text-align:center;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.7,.2,1)}
+  .reveal.show{opacity:1;transform:none}
+
+  /* RESPONSIVE */
+  @media(max-width:900px){
+    .hero-grid,.scanner{grid-template-columns:1fr}
+    .cards{grid-template-columns:1fr 1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    .hud{max-width:340px;order:-1}
+  }
+  @media(max-width:640px){
+    .burger{display:block}
+    .links{
+      position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;
+      background:rgba(5,7,13,.97);border-bottom:1px solid var(--line);
+      max-height:0;overflow:hidden;transition:max-height .4s;
+    }
+    .links.open{max-height:360px}
+    .links a{padding:16px 0;width:100%;text-align:center}
+    .cards{grid-template-columns:1fr}
+    .join{padding:40px 20px}
+    section{padding:70px 0}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<nav>
+  <div class="container nav-in">
+    <a href="#top" class="brand">AXIOM<span>-9</span></a>
+    <button class="burger" id="burger" aria-label="Toggle menu">☰</button>
+    <div class="links" id="links">
+      <a href="#features">Systems</a>
+      <a href="#augment">Augment</a>
+      <a href="#timeline">Evolution</a>
+      <a href="#join" class="btn btn-ghost" style="padding:10px 22px;color:var(--cyan)">Initiate</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="container hero-grid">
+    <div class="reveal">
+      <div class="tag mono">SYSTEM ONLINE // v9.0.4</div>
+      <h1>HUMAN,<br /><span class="glitch" data-text="UPGRADED.">UPGRADED.</span></h1>
+      <p class="lead">AXIOM-9 fuses flesh and silicon into one seamless intelligence. Sharper senses, faster reflexes, limitless memory — engineered to evolve with you.</p>
+      <div class="typed mono" id="typed"></div>
+      <div class="cta">
+        <a href="#join" class="btn btn-primary">Begin Augmentation</a>
+        <a href="#features" class="btn btn-ghost">Explore Systems</a>
+      </div>
+    </div>
+
+    <div class="hud reveal">
+      <svg viewBox="0 0 400 400" aria-label="Cyborg core HUD animation">
+        <defs>
+          <radialGradient id="core" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00f0ff" stop-opacity=".9"/>
+            <stop offset="60%" stop-color="#00f0ff" stop-opacity=".15"/>
+            <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <g class="ring r1" filter="url(#glow)">
+          <circle cx="200" cy="200" r="180" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="6 14"/>
+        </g>
+        <g class="ring r2" filter="url(#glow)">
+          <circle cx="200" cy="200" r="148" fill="none" stroke="#ff2bd6" stroke-width="3" stroke-dasharray="90 30 20 30"/>
+        </g>
+        <g class="ring r3" filter="url(#glow)">
+          <circle cx="200" cy="200" r="116" fill="none" stroke="#b6ff3b" stroke-width="1.5" stroke-dasharray="2 8"/>
+          <path d="M200 70 L200 90 M200 310 L200 330 M70 200 L90 200 M310 200 L330 200" stroke="#b6ff3b" stroke-width="3"/>
+        </g>
+        <circle cx="200" cy="200" r="90" fill="url(#core)"/>
+        <g class="eye" filter="url(#glow)">
+          <path d="M140 200 Q200 150 260 200 Q200 250 140 200 Z" fill="none" stroke="#00f0ff" stroke-width="3"/>
+          <circle cx="200" cy="200" r="22" fill="#00f0ff"/>
+          <circle cx="200" cy="200" r="9" fill="#05070d"/>
+        </g>
+      </svg>
+      <div class="hud-label a mono">NEURAL LINK: 99.8%</div>
+      <div class="hud-label b mono">CORE TEMP: 36.6°C</div>
+      <div class="hud-label c mono">SYNC: ACTIVE</div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="container stats reveal">
+    <div class="stat"><b data-count="2048">0</b><span>Neural nodes</span></div>
+    <div class="stat"><b data-count="120">0</b><span>ms reaction</span></div>
+    <div class="stat"><b data-count="99">0</b><span>% uptime</span></div>
+    <div class="stat"><b data-count="10">0</b><span>x faster recall</span></div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="mono">// 01 CORE SYSTEMS</div>
+      <h2>Built to <em>outperform</em> biology</h2>
+    </div>
+    <div class="cards">
+      <div class="card reveal"><div class="icon">🧠</div><h3>Neural Interface</h3><p>A low-latency brain-machine bridge that turns thought into action in real time.</p></div>
+      <div class="card reveal"><div class="icon">👁️</div><h3>Optic Overlay</h3><p>Augmented vision with thermal, night and data HUD layers — see beyond the visible.</p></div>
+      <div class="card reveal"><div class="icon">🦾</div><h3>Kinetic Limbs</h3><p>Carbon-fibre actuators delivering precision and power far past natural limits.</p></div>
+      <div class="card reveal"><div class="icon">🛡️</div><h3>Adaptive Armor</h3><p>Self-healing nano-plating that hardens on impact and repairs itself within seconds.</p></div>
+      <div class="card reveal"><div class="icon">⚡</div><h3>Bio-Reactor Core</h3><p>A compact power cell that harvests body heat and motion for endless energy.</p></div>
+      <div class="card reveal"><div class="icon">🔐</div><h3>Ghost Encryption</h3><p>Military-grade quantum encryption keeps your mind and data entirely your own.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="augment">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="mono">// 02 AUGMENTATION SCANNER</div>
+      <h2>Choose your <em>upgrade</em></h2>
+    </div>
+    <div class="scanner reveal">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-i="0"><b>NEURAL</b>Cognition &amp; memory boost</button>
+        <button class="tab" data-i="1"><b>OPTIC</b>Enhanced multi-spectrum vision</button>
+        <button class="tab" data-i="2"><b>KINETIC</b>Strength &amp; speed actuators</button>
+      </div>
+      <div class="readout">
+        <h3 id="r-title">NEURAL LINK</h3>
+        <p id="r-desc">Direct cortex interface with an onboard AI co-processor.</p><br />
+        <div class="mono">PERFORMANCE</div><div class="bar"><i id="b1"></i></div>
+        <div class="mono">STABILITY</div><div class="bar"><i id="b2"></i></div>
+        <div class="mono">BIO-COMPATIBILITY</div><div class="bar"><i id="b3"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="timeline">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="mono">// 03 EVOLUTION LOG</div>
+      <h2>The road to <em>transcendence</em></h2>
+    </div>
+    <div class="timeline">
+      <div class="tl reveal"><div class="mono">PHASE 01</div><h3>Scan &amp; Calibrate</h3><p>Full-body mapping creates your unique augmentation blueprint.</p></div>
+      <div class="tl reveal"><div class="mono">PHASE 02</div><h3>Implant &amp; Integrate</h3><p>Modules are installed and synced with your nervous system.</p></div>
+      <div class="tl reveal"><div class="mono">PHASE 03</div><h3>Learn &amp; Adapt</h3><p>The AI core studies your patterns and tunes itself to you.</p></div>
+      <div class="tl reveal"><div class="mono">PHASE 04</div><h3>Transcend</h3><p>Operate beyond human limits — and keep evolving with every update.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="join">
+  <div class="container">
+    <div class="join reveal">
+      <h2>READY TO <span style="color:var(--cyan)">UPGRADE?</span></h2>
+      <p>Join the waitlist and get priority access to the next augmentation batch.</p>
+      <form id="form">
+        <input type="email" id="email" placeholder="enter_your_email@domain" required />
+        <button class="btn btn-primary" type="submit">Initiate</button>
+      </form>
+      <div id="msg" class="mono"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container mono">© 2026 AXIOM-9 // All systems nominal // Built with HTML, CSS &amp; JS</div>
+</footer>
+
+<script>
+/* ---------- Circuit / particle background ---------- */
+(function(){
+  const c=document.getElementById('bg'),x=c.getContext('2d');
+  let w,h,pts=[];
+  function resize(){
+    w=c.width=innerWidth;h=c.height=innerHeight;
+    const n=Math.min(90,Math.floor(w*h/16000));
+    pts=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35}));
+  }
+  function draw(){
+    x.clearRect(0,0,w,h);
+    for(const p of pts){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>w)p.vx*=-1;
+      if(p.y<0||p.y>h)p.vy*=-1;
+      x.fillStyle='rgba(0,240,255,.8)';x.fillRect(p.x,p.y,2,2);
+    }
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+      const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){
+        x.strokeStyle='rgba(0,240,255,'+(.18*(1-d/130))+')';
+        x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,a.y);x.lineTo(b.x,b.y);x.stroke();
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  addEventListener('resize',resize);resize();draw();
+})();
+
+/* ---------- Mobile menu ---------- */
+const links=document.getElementById('links');
+document.getElementById('burger').onclick=()=>links.classList.toggle('open');
+links.querySelectorAll('a').forEach(a=>a.onclick=()=>links.classList.remove('open'));
+
+/* ---------- Typing effect ---------- */
+(function(){
+  const lines=['> initializing neural link...','> calibrating optic sensors...','> augmentation complete. welcome, human.'];
+  const el=document.getElementById('typed');let l=0,c=0,del=false;
+  function tick(){
+    const s=lines[l];
+    el.textContent=s.slice(0,c);
+    if(!del&&c<s.length){c++;setTimeout(tick,55)}
+    else if(!del){del=true;setTimeout(tick,1400)}
+    else if(c>0){c--;setTimeout(tick,22)}
+    else{del=false;l=(l+1)%lines.length;setTimeout(tick,300)}
+  }
+  tick();
+})();
+
+/* ---------- Scroll reveal + counters ---------- */
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.classList.add('show');
+    e.target.querySelectorAll('[data-count]').forEach(count);
+    io.unobserve(e.target);
+  });
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function count(el){
+  const t=+el.dataset.count;let n=0;const step=Math.max(1,Math.ceil(t/60));
+  const id=setInterval(()=>{n=Math.min(t,n+step);el.textContent=n;if(n>=t)clearInterval(id)},25);
+}
+
+/* ---------- Augmentation scanner ---------- */
+const data=[
+  {t:'NEURAL LINK',d:'Direct cortex interface with an onboard AI co-processor for instant recall and parallel thinking.',v:[96,92,88]},
+  {t:'OPTIC OVERLAY',d:'Multi-spectrum lenses with thermal, night vision and live data HUD layered over your sight.',v:[90,95,93]},
+  {t:'KINETIC LIMBS',d:'Carbon-fibre actuators with haptic feedback, delivering power and precision beyond human limits.',v:[98,85,80]}
+];
+const tabs=document.querySelectorAll('.tab');
+function show(i){
+  tabs.forEach((t,k)=>t.classList.toggle('active',k===i));
+  document.getElementById('r-title').textContent=data[i].t;
+  document.getElementById('r-desc').textContent=data[i].d;
+  ['b1','b2','b3'].forEach((id,k)=>{
+    const b=document.getElementById(id);b.style.width='0';
+    setTimeout(()=>b.style.width=data[i].v[k]+'%',60);
+  });
+}
+tabs.forEach((t,i)=>t.onclick=()=>show(i));
+show(0);
+
+/* ---------- Form ---------- */
+document.getElementById('form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const m=document.getElementById('msg');
+  m.textContent='> ACCESS GRANTED. You are on the waitlist.';
+  e.target.reset();
+});
+</script>
+</body>
+</html>
